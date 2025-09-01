@@ -1,0 +1,32 @@
+server:
+  port: 9000
+  netty:
+    connection-timeout: 2s
+    idle-timeout: 15s
+  shutdown: graceful
+
+spring:
+  application:
+    name: edge-service
+  lifecycle:
+    timeout-per-shutdown-phase: 15s
+  cloud:
+    gateway:
+      server:
+        webflux:
+          httpclient:
+            connect-timeout: 2000
+            response-timeout: 5000
+            pool:
+              type: elastic
+              max-life-time: 30s
+              max-idle-time: 15s
+          routes:
+            - id: catalog-route
+              uri: ${CATALOG_SERVICE_URL:http://localhost:9001}/books
+              predicates:
+                - Path=/books/**
+            - id: order-route
+              uri: ${ORDER_SERVICE_URL:http://localhost:9002}/orders
+              predicates:
+                - Path=/orders/**
