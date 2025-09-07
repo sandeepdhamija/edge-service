@@ -10,6 +10,11 @@ spring:
     name: edge-service
   lifecycle:
     timeout-per-shutdown-phase: 15s
+  session:
+    store-type: redis
+    timeout: 10m
+    redis:
+      namespace: polar:edge
   data:
     redis:
     host: localhost
@@ -28,6 +33,7 @@ spring:
               max-life-time: 30s
               max-idle-time: 15s
           default-filters:
+            - SaveSession
             - name: Retry
               args:
                 retries: 3
